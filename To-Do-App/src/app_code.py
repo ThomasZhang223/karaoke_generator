@@ -170,3 +170,30 @@ class User:
                 cur.close()
             except Exception:
                 pass
+    
+    def update_task(self, task: Task) -> bool:
+        logger = self._mylogger
+        logger.info(f"User.update_task(item={task.item()})")
+        conn = self.connection()
+        if conn is None:
+            logger.error("No DB connection available for update_task")
+            return False
+        try:
+            cur = conn.cursor()
+            affected = cur.execute(
+                "UPDATE ToDoData SET type=%s, started=%s, due=%s, done=%s WHERE item=%s AND username=%s",
+                (task.type(), task.started(), task.due(), task.done(), task.item(), self._representative_username)
+            )
+            conn.commit()
+            if affected == 0:
+                logger.warning(f"update_task: no such item {task.item()}")
+                return False
+            return True
+        except pymysql.Error as e:
+            logger.error(f"update_task error: {e}")
+            return False
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
