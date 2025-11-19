@@ -142,3 +142,31 @@ class User:
                 cur.close()
             except Exception:
                 pass
+
+    def add_task(self, task: Task) -> bool:
+        logger = self._mylogger
+        logger.info(f"User.add_task(item={task.item()})")
+        conn = self.connection()
+        if conn is None:
+            logger.error("No DB connection available for add_task")
+            return False
+        try:
+            cur = conn.cursor()
+            # include the representative username when inserting
+            cur.execute(
+                "INSERT INTO ToDoData (item, type, started, due, done, username) VALUES (%s, %s, %s, %s, %s, %s)",
+                (*task.to_tuple(), self._representative_username)
+            )
+            conn.commit()
+            return True
+        except pymysql.Error as e:
+            if getattr(e, "args", None) and e.args[0] == 1062:
+                logger.warning(f"add_task duplicate: {task.item()}")
+            else:
+                logger.error(f"add_task error: {e}")
+            return False
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
