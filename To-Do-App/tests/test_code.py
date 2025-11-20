@@ -135,5 +135,32 @@ def test_next_multiple_tasks():
     assert result.item() == names[1]
     for n in names:
         delete_task(n)
+        
+@pytest.mark.regression
+def test_today_task():
+    """A task due today should be returned by next_task() over a task due tomorrow."""
+    global user
+    now = datetime.now()
+    today = now
+    tomorrow = now + timedelta(days=1)
+    name_today = f"Today Task {int(time.time())}"
+    name_tomorrow = f"Tomorrow Task {int(time.time())}"
+    task_today = Task(item=name_today, type="Work", started=today.replace(hour=9, minute=0, second=0, microsecond=0), due=today.replace(hour=17, minute=0, second=0, microsecond=0), done=None)
+    task_tomorrow = Task(item=name_tomorrow, type="Work", started=today.replace(hour=9, minute=0, second=0, microsecond=0), due=tomorrow.replace(hour=17, minute=0, second=0, microsecond=0), done=None)
+    delete_task(name_today)
+    delete_task(name_tomorrow)
+    
+    # ensure no other tasks exist that could interfere
+    tasks = user.fetch_tasks()
+    for t in tasks:
+        user.delete_task(t.item())
+        
+    user.add_task(task_tomorrow)
+    user.add_task(task_today)
+    result = user.next_task()
+    assert result is not None
+    assert result.item() == name_today
+    delete_task(name_today)
+    delete_task(name_tomorrow)
 
 
