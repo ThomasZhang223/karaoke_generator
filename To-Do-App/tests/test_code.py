@@ -88,3 +88,9 @@ def test_update_nonexistent():
     delete_task(unique_name)
     assert user.update_task(updated_task) is False
     assert all(t.item() != unique_name for t in user.fetch_tasks())
+
+@pytest.mark.smoke
+def delete_task(item_name: str):
+    global user
+    user.delete_task(item_name)
+
