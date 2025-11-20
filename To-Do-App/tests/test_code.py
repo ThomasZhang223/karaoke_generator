@@ -59,3 +59,32 @@ def test_add_duplicate():
     assert len(tasks) == 1
     user.print_tasks()
     delete_task(unique_name)
+
+@pytest.mark.regression
+def test_update_success():
+    global user
+    unique_name = f"Test Task Update {int(time.time())}"
+    original_task = Task(item=unique_name, type="Work", started=datetime(2025, 10, 1, 9, 0, 0), due=datetime(2025, 10, 2, 17, 0, 0), done=None)
+    updated_task = Task(item=unique_name, type="Personal", started=datetime(2025, 10, 3, 10, 0, 0), due=datetime(2025, 10, 4, 18, 0, 0), done=datetime(2025, 10, 5, 12, 0, 0))
+    delete_task(unique_name)
+    assert user.add_task(original_task) is True
+    assert user.update_task(updated_task) is True
+    tasks = [t for t in user.fetch_tasks() if t.item() == unique_name]
+    assert len(tasks) == 1
+    t = tasks[0]
+    assert t.type() == "Personal"
+    assert t.started() == datetime(2025, 10, 3, 10, 0, 0)
+    assert t.due() == datetime(2025, 10, 4, 18, 0, 0)
+    assert t.done() == datetime(2025, 10, 5, 12, 0, 0)
+    user.print_tasks()
+    delete_task(unique_name)
+
+
+@pytest.mark.regression
+def test_update_nonexistent():
+    global user
+    unique_name = f"Nonexistent Task {int(time.time())}"
+    updated_task = Task(item=unique_name, type="Errand", started=datetime(2025, 10, 6, 8, 0, 0), due=datetime(2025, 10, 7, 17, 0, 0), done=None)
+    delete_task(unique_name)
+    assert user.update_task(updated_task) is False
+    assert all(t.item() != unique_name for t in user.fetch_tasks())
