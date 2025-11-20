@@ -163,4 +163,22 @@ def test_today_task():
     delete_task(name_today)
     delete_task(name_tomorrow)
 
+@pytest.mark.regression
+def test_tomorrow_single_task():
+    """When only a tomorrow task exists, next_task() should return it."""
+    global user
+    now = datetime.now()
+    tomorrow = now + timedelta(days=1)
+    unique_name = f"Tomorrow Single {int(time.time())}"
+    task = Task(item=unique_name, type="Work", started=now.replace(hour=9, minute=0, second=0, microsecond=0), due=tomorrow.replace(hour=17, minute=0, second=0, microsecond=0), done=None)
+    delete_task(unique_name)
+    # ensure no other tasks exist that could interfere
+    tasks = user.fetch_tasks()
+    for t in tasks:
+        user.delete_task(t.item())
+    user.add_task(task)
+    result = user.next_task()
+    assert result is not None
+    assert result.item() == unique_name
+    delete_task(unique_name)
 
