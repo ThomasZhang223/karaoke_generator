@@ -197,3 +197,27 @@ class User:
                 cur.close()
             except Exception:
                 pass
+
+    def delete_task(self, item_name: str) -> bool:
+        logger = self._mylogger
+        logger.info(f"User.delete_task(item={item_name})")
+        conn = self.connection()
+        if conn is None:
+            logger.error("No DB connection available for delete_task")
+            return False
+        try:
+            cur = conn.cursor()
+            affected = cur.execute("DELETE FROM ToDoData WHERE item=%s AND username=%s", (item_name, self._representative_username))
+            conn.commit()
+            if affected == 0:
+                logger.warning(f"delete_task: no such item {item_name}")
+                return False
+            return True
+        except pymysql.Error as e:
+            logger.error(f"delete_task error: {e}")
+            return False
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
