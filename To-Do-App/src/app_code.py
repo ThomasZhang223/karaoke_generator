@@ -221,3 +221,30 @@ class User:
                 cur.close()
             except Exception:
                 pass
+
+
+    def next_task(self) -> Task | None:
+        logger = self._mylogger
+        logger.info("User.next_task()")
+        conn = self.connection()
+        if conn is None:
+            logger.error("No DB connection available for next_task")
+            return None
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT item, type, started, due, done FROM ToDoData WHERE done IS NULL AND username=%s ORDER BY due ASC LIMIT 1",
+                (self._representative_username,)
+            )
+            row = cur.fetchone()
+            if row:
+                return Task.from_tuple(row)
+            return None
+        except pymysql.Error as e:
+            logger.error(f"next_task error: {e}")
+            return None
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass

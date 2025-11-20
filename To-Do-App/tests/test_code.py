@@ -94,3 +94,46 @@ def delete_task(item_name: str):
     global user
     user.delete_task(item_name)
 
+@pytest.mark.regression
+def test_next_no_tasks():
+    global user
+    tasks = user.fetch_tasks()
+    for t in tasks:
+        user.delete_task(t.item())
+    assert user.next_task() is None
+
+
+@pytest.mark.smoke
+@pytest.mark.regression
+def test_next_single_task():
+    global user
+    unique_name = f"Next Single {int(time.time())}"
+    task = Task(item=unique_name, type="Work", started=datetime(2025, 10, 10, 9, 0, 0), due=datetime(2025, 10, 11, 17, 0, 0), done=None)
+    delete_task(unique_name)
+    user.add_task(task)
+    result = user.next_task()
+    assert result is not None
+    assert result.item() == unique_name
+    delete_task(unique_name)
+
+
+@pytest.mark.regression
+def test_next_multiple_tasks():
+    global user
+    names = [f"Next Multi {i} {int(time.time())}" for i in range(3)]
+    for n in names:
+        delete_task(n)
+    tasks = [
+        Task(item=names[0], type="Work", started=datetime(2025, 10, 10, 9, 0, 0), due=datetime(2025, 10, 12, 17, 0, 0), done=None),
+        Task(item=names[1], type="Work", started=datetime(2025, 10, 10, 9, 0, 0), due=datetime(2025, 10, 11, 17, 0, 0), done=None),
+        Task(item=names[2], type="Work", started=datetime(2025, 10, 10, 9, 0, 0), due=datetime(2025, 10, 13, 17, 0, 0), done=None),
+    ]
+    for t in tasks:
+        user.add_task(t)
+    result = user.next_task()
+    assert result is not None
+    assert result.item() == names[1]
+    for n in names:
+        delete_task(n)
+
+
