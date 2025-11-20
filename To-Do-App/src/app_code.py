@@ -248,3 +248,29 @@ class User:
                 cur.close()
             except Exception:
                 pass
+
+
+    def today_tasks(self) -> List[Task]:
+        logger = self._mylogger
+        logger.info("User.today_tasks()")
+        conn = self.connection()
+        if conn is None:
+            logger.error("No DB connection available for today_tasks")
+            return []
+        try:
+            cur = conn.cursor()
+            # select tasks due today for this username and not done
+            cur.execute(
+                "SELECT item, type, started, due, done FROM ToDoData WHERE username=%s AND done IS NULL AND DATE(due)=CURDATE()",
+                (self._representative_username,)
+            )
+            rows = cur.fetchall()
+            return [Task.from_tuple(r) for r in rows]
+        except pymysql.Error as e:
+            logger.error(f"today_tasks error: {e}")
+            return []
+        finally:
+            try:
+                cur.close()
+            except Exception:
+                pass
