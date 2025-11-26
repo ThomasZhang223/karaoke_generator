@@ -24,12 +24,30 @@ This document contains the prioritized product backlog and sprint breakdowns for
 
 ---
 
+### Story 1.0: Requirements & Design Documentation
+**Type:** Task  
+**Assignee:** William  
+**Priority:** P0  
+**Labels:** `documentation`, `requirements`, `design`, `setup`
+
+**Description:**
+Create comprehensive requirements and design documentation including user stories, use cases, and domain model to establish clear, traceable user needs and system structure.
+
+**Acceptance Criteria:**
+- [ ] User stories document created (`docs/user_stories.md`)
+- [ ] Use cases document created (`docs/use_cases.md`)
+- [ ] Domain model document created (`docs/domain_model.md`)
+- [ ] All documents include traceability to backlog items
+- [ ] User needs clearly defined and documented
+- [ ] System structure and relationships documented
+
+---
+
 ### Story 1.1: Project Architecture & Setup
 **Type:** Task  
-**Assignee:** All Members  
-**Story Points:** 8  
+**Assignee:** William
 **Priority:** P0  
-**Labels:** `setup`, `architecture`, `documentation`, `frontend`, `backend`
+**Labels:** `frontend`, `backend`, `setup`, `architecture`
 
 **Description:**
 Create comprehensive architecture document outlining system design, module interfaces, data flow, and integration points. Establish monorepo structure with frontend (React + TypeScript + Vite) and backend (FastAPI) folders.
@@ -45,24 +63,11 @@ Create comprehensive architecture document outlining system design, module inter
 - [ ] `.gitignore` updated for both Python and Node.js
 - [ ] Code style guidelines defined
 
-**Tasks:**
-- [ ] Create architecture document template
-- [ ] Design system architecture diagram
-- [ ] Define module interfaces and contracts
-- [ ] Set up monorepo Git repository structure
-- [ ] Create `frontend/` folder and initialize Vite + React + TypeScript
-- [ ] Create `backend/` folder with FastAPI structure (api/, services/, models/)
-- [ ] Set up shadcn-ui in frontend
-- [ ] Update `.gitignore` for Python (__pycache__, venv, etc.) and Node.js (node_modules, dist, etc.)
-- [ ] Create development environment setup guide (frontend and backend)
-- [ ] Establish code review process
-
 ---
 
 ### Story 1.2: YouTube Audio Download Research & Setup
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Thomas  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `audio-acquisition`, `research`, `setup`
 
@@ -77,23 +82,11 @@ Research and evaluate YouTube download libraries, set up Python environment, and
 - [ ] Installation process documented
 - [ ] Error handling for invalid URLs implemented
 
-**Tasks:**
-- [ ] Research pytube, yt-dlp, and other YouTube download libraries
-- [ ] Compare features, reliability, and maintenance status
-- [ ] Set up Python virtual environment
-- [ ] Install and test primary library (pytube or yt-dlp)
-- [ ] Test download with various YouTube URLs
-- [ ] Create `src/audio-acquisition/` module structure
-- [ ] Document installation and setup process
-- [ ] Implement basic URL validation
-- [ ] Coordinate with Mark on audio format requirements
-
 ---
 
 ### Story 1.3: Audio Processing Research & Setup
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Mark  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `audio-processing`, `research`, `setup`
 
@@ -109,21 +102,11 @@ Research and compare vocal separation libraries (Demucs, Spleeter, others), set 
 - [ ] Module structure created in `src/audio-processing/`
 - [ ] Audio format requirements coordinated with Thomas
 
-**Tasks:**
-- [ ] Research and compare vocal separation libraries (Demucs, Spleeter, others)
-- [ ] Set up Python environment with required dependencies
-- [ ] Install and test Demucs locally with sample audio files
-- [ ] Document installation process and system requirements
-- [ ] Run baseline tests on different song genres to assess separation quality
-- [ ] Coordinate with Thomas on audio file format requirements (sample rate, bitrate, format)
-- [ ] Create initial audio processing module structure
-
 ---
 
 ### Story 1.4: Lyrics Intelligence Research & Setup
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Aruhant  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `lyrics-intelligence`, `research`, `setup`
 
@@ -138,21 +121,11 @@ Research lyrics APIs and timestamping solutions, set up Python environment, and 
 - [ ] Installation process documented
 - [ ] API rate limits and usage constraints documented
 
-**Tasks:**
-- [ ] Research lyrics APIs (LyricsGenius, Musixmatch, Genius API)
-- [ ] Research timestamping solutions (QuickLRC AI, manual sync tools)
-- [ ] Set up Python environment with required dependencies
-- [ ] Test lyrics fetching with sample songs
-- [ ] Create `src/lyrics-intelligence/` module structure
-- [ ] Document API keys setup and rate limits
-- [ ] Coordinate with team on lyrics format requirements
-
 ---
 
 ### Story 1.5: Video Rendering Research & Setup
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** William  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `video-rendering`, `research`, `setup`
 
@@ -168,15 +141,6 @@ Research FFmpeg integration options, set up Python environment, and create initi
 - [ ] Installation process documented
 - [ ] System requirements documented
 
-**Tasks:**
-- [ ] Research FFmpeg-Python, moviepy, and other video libraries
-- [ ] Install FFmpeg on development machine
-- [ ] Set up Python environment with required dependencies
-- [ ] Test basic video creation with FFmpeg
-- [ ] Create `src/video-rendering/` module structure
-- [ ] Document FFmpeg installation process
-- [ ] Coordinate with team on video format requirements (720p, codec, etc.)
-
 ---
 
 ## SPRINT 2: Core Implementation (Week 2)
@@ -187,9 +151,8 @@ Research FFmpeg integration options, set up Python environment, and create initi
 ---
 
 ### Story 2.1: YouTube to MP3 Conversion Implementation
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Thomas  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `audio-acquisition`, `implementation`, `core`
 
@@ -205,22 +168,11 @@ Implement complete YouTube download and MP3 conversion pipeline with error handl
 - [ ] Unit tests for core functions
 - [ ] Output format matches Mark's requirements
 
-**Tasks:**
-- [ ] Implement YouTube URL validation
-- [ ] Implement audio download function
-- [ ] Implement MP3 conversion with quality options
-- [ ] Add error handling for common failure cases
-- [ ] Implement fallback to secondary library (yt-dlp if using pytube)
-- [ ] Write unit tests
-- [ ] Test with various YouTube URLs and formats
-- [ ] Document API and usage examples
-
 ---
 
 ### Story 2.2: Demucs Vocal Separation Pipeline
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Mark  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `audio-processing`, `implementation`, `core`
 
@@ -235,21 +187,11 @@ Implement complete Demucs vocal separation pipeline with quality optimization an
 - [ ] Unit tests for core functions
 - [ ] Integration test with Thomas's MP3 output
 
-**Tasks:**
-- [ ] Implement Demucs vocal separation pipeline
-- [ ] Build audio quality optimization functions (normalization, noise reduction)
-- [ ] Create functions to export separated instrumental track
-- [ ] Test separation quality across multiple song types (pop, rock, rap, classical)
-- [ ] Document processing time benchmarks for different song lengths
-- [ ] Begin integration testing with Thomas's MP3 output
-- [ ] Write unit tests
-
 ---
 
 ### Story 2.3: Spleeter Fallback Implementation
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Mark  
-**Story Points:** 8  
 **Priority:** P1  
 **Labels:** `audio-processing`, `implementation`, `fallback`
 
@@ -263,20 +205,11 @@ Set up Spleeter as backup/fallback option for vocal separation when Demucs fails
 - [ ] Error handling for Spleeter failures
 - [ ] Unit tests for fallback mechanism
 
-**Tasks:**
-- [ ] Install and configure Spleeter
-- [ ] Implement Spleeter separation function
-- [ ] Create fallback logic to switch between Demucs and Spleeter
-- [ ] Compare quality between both methods
-- [ ] Implement error handling
-- [ ] Write unit tests
-
 ---
 
 ### Story 2.4: Lyrics Fetching Implementation
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Aruhant  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `lyrics-intelligence`, `implementation`, `core`
 
@@ -291,21 +224,11 @@ Implement lyrics fetching from APIs with fallback options and error handling.
 - [ ] Unit tests for core functions
 - [ ] Rate limiting and API usage tracking
 
-**Tasks:**
-- [ ] Implement lyrics fetching from primary API
-- [ ] Implement fallback to secondary API
-- [ ] Create song matching logic (fuzzy matching for titles/artists)
-- [ ] Add error handling for API failures
-- [ ] Implement rate limiting
-- [ ] Write unit tests
-- [ ] Document API usage and rate limits
-
 ---
 
 ### Story 2.5: LRC File Generation Foundation
-**Type:** Feature  
+**Type:** Issue  
 **Assignee:** Aruhant  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `lyrics-intelligence`, `implementation`, `lrc`
 
@@ -319,13 +242,25 @@ Create LRC file parsing and generation utilities with basic timestamp support.
 - [ ] Unit tests for LRC parsing and generation
 - [ ] Documentation of LRC format requirements
 
-**Tasks:**
-- [ ] Research LRC file format specification
-- [ ] Implement LRC file parser
-- [ ] Implement LRC file generator
-- [ ] Add timestamp format validation
-- [ ] Write unit tests
-- [ ] Document LRC format and usage
+---
+
+### Story 2.6: FastAPI Backend API Setup
+**Type:** Task  
+**Assignee:** William  
+**Priority:** P0  
+**Labels:** `backend`, `setup`, `api`
+
+**Description:**
+Set up FastAPI backend with API endpoints, CORS configuration, and basic service structure to orchestrate core modules.
+
+**Acceptance Criteria:**
+- [ ] FastAPI application initialized with proper structure
+- [ ] CORS middleware configured for frontend
+- [ ] Basic API endpoints created (health check, generate karaoke)
+- [ ] Service layer structure created (api/, services/, models/)
+- [ ] Error handling middleware implemented
+- [ ] API documentation accessible (Swagger/OpenAPI)
+- [ ] Backend can be run locally and tested
 
 ---
 
@@ -336,10 +271,30 @@ Create LRC file parsing and generation utilities with basic timestamp support.
 
 ---
 
-### Story 3.1: Lyrics Timestamp Synchronization
-**Type:** Feature  
+### Story 3.1: Frontend UI Implementation
+**Type:** Issue  
+**Assignee:** William  
+**Priority:** P0  
+**Labels:** `frontend`, `implementation`, `ui`
+
+**Description:**
+Implement React frontend with TypeScript, shadcn-ui components, and API integration for karaoke video generation.
+
+**Acceptance Criteria:**
+- [ ] React + TypeScript + Vite setup complete
+- [ ] shadcn-ui installed and configured
+- [ ] Main form component for YouTube URL input
+- [ ] API client service for backend communication
+- [ ] Progress indicator component for generation status
+- [ ] Video player component for displaying results
+- [ ] Error handling and user feedback
+- [ ] Responsive design implemented
+
+---
+
+### Story 3.2: Lyrics Timestamp Synchronization
+**Type:** Issue  
 **Assignee:** Aruhant  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `lyrics-intelligence`, `implementation`, `synchronization`
 
@@ -354,21 +309,11 @@ Implement lyrics timestamp synchronization using QuickLRC AI or manual alignment
 - [ ] Unit tests for synchronization functions
 - [ ] Integration test with audio files
 
-**Tasks:**
-- [ ] Research and integrate QuickLRC AI or timestamping solution
-- [ ] Implement timestamp synchronization algorithm
-- [ ] Create manual correction interface/tools
-- [ ] Test accuracy on diverse song set
-- [ ] Optimize for speed and accuracy
-- [ ] Write unit tests
-- [ ] Document synchronization process
-
 ---
 
-### Story 3.2: Audio Processing Integration
-**Type:** Feature  
+### Story 3.3: Audio Processing Integration
+**Type:** Issue  
 **Assignee:** Mark  
-**Story Points:** 8  
 **Priority:** P0  
 **Labels:** `audio-processing`, `integration`, `optimization`
 
@@ -383,21 +328,11 @@ Integrate audio processing module with audio acquisition system and optimize per
 - [ ] Quality assurance testing on 10-15 diverse songs
 - [ ] API documentation completed
 
-**Tasks:**
-- [ ] Integrate audio processing module with Thomas's audio acquisition system
-- [ ] Optimize processing speed (parallel processing, batch operations if needed)
-- [ ] Implement error handling for edge cases (corrupted files, unsupported formats)
-- [ ] Work with William on audio format requirements for video rendering
-- [ ] Conduct quality assurance testing on 10-15 diverse songs
-- [ ] Fine-tune separation parameters for best quality/speed balance
-- [ ] Begin documentation of API and usage examples
-
 ---
 
-### Story 3.3: Video Rendering Foundation
-**Type:** Feature  
+### Story 3.4: Video Rendering Foundation
+**Type:** Issue  
 **Assignee:** William  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `video-rendering`, `implementation`, `core`
 
@@ -412,21 +347,11 @@ Implement basic video rendering engine with FFmpeg integration and text overlay 
 - [ ] Unit tests for core rendering functions
 - [ ] Integration test with sample audio and lyrics
 
-**Tasks:**
-- [ ] Implement FFmpeg wrapper functions
-- [ ] Create video rendering pipeline
-- [ ] Implement text overlay rendering
-- [ ] Add background/image support
-- [ ] Test with sample audio files
-- [ ] Write unit tests
-- [ ] Document rendering API
-
 ---
 
-### Story 3.4: Lyrics-to-Video Synchronization
-**Type:** Feature  
+### Story 3.5: Lyrics-to-Video Synchronization
+**Type:** Issue  
 **Assignee:** William  
-**Story Points:** 13  
 **Priority:** P0  
 **Labels:** `video-rendering`, `implementation`, `synchronization`
 
@@ -441,14 +366,25 @@ Implement synchronized lyrics display in video using LRC timestamps.
 - [ ] Integration test with Aruhant's LRC files
 - [ ] Unit tests for synchronization logic
 
-**Tasks:**
-- [ ] Integrate LRC file parsing
-- [ ] Implement timestamp-based lyric display
-- [ ] Add text highlighting for current line
-- [ ] Implement smooth transitions
-- [ ] Test with various LRC files
-- [ ] Write unit tests
-- [ ] Coordinate with Aruhant on LRC format
+---
+
+### Story 3.6: Frontend-Backend Integration
+**Type:** Issue  
+**Assignee:** William  
+**Priority:** P0  
+**Labels:** `frontend`, `backend`, `integration`, `implementation`
+
+**Description:**
+Integrate frontend React application with FastAPI backend, implement async job handling, and complete end-to-end user flow.
+
+**Acceptance Criteria:**
+- [ ] Frontend successfully calls backend API endpoints
+- [ ] Async job handling implemented for long-running video generation
+- [ ] Progress updates displayed in real-time
+- [ ] Video download functionality working
+- [ ] Error handling across frontend-backend communication
+- [ ] End-to-end flow tested (URL input → video download)
+- [ ] CORS properly configured
 
 ---
 
@@ -460,11 +396,10 @@ Implement synchronized lyrics display in video using LRC timestamps.
 ---
 
 ### Story 4.1: End-to-End Integration
-**Type:** Feature  
-**Assignee:** All Members  
-**Story Points:** 21  
+**Type:** Issue  
+**Assignee:** William  
 **Priority:** P0  
-**Labels:** `integration`, `core`, `critical`
+**Labels:** `integration`, `implementation`, `core`
 
 **Description:**
 Integrate all modules into a complete pipeline from YouTube URL to karaoke video output.
@@ -477,24 +412,13 @@ Integrate all modules into a complete pipeline from YouTube URL to karaoke video
 - [ ] Sample output videos generated successfully
 - [ ] Performance meets success criteria (< 5 min for 3-min song)
 
-**Tasks:**
-- [ ] Integrate audio acquisition with audio processing
-- [ ] Integrate audio processing with lyrics intelligence
-- [ ] Integrate lyrics intelligence with video rendering
-- [ ] Create main pipeline orchestrator
-- [ ] Implement comprehensive error handling
-- [ ] Write integration tests
-- [ ] Test with multiple sample songs
-- [ ] Performance benchmarking
-
 ---
 
 ### Story 4.2: Bug Fixes & Performance Optimization
-**Type:** Bug  
-**Assignee:** All Members  
-**Story Points:** 13  
+**Type:** Incident  
+**Assignee:** Mark  
 **Priority:** P0  
-**Labels:** `bug-fix`, `optimization`, `qa`
+**Labels:** `bug-fix`, `optimization`, `qa`, `implementation`
 
 **Description:**
 Fix identified bugs and optimize performance to meet success criteria.
@@ -506,23 +430,13 @@ Fix identified bugs and optimize performance to meet success criteria.
 - [ ] Memory usage optimized
 - [ ] Error messages clear and actionable
 
-**Tasks:**
-- [ ] Identify and prioritize bugs
-- [ ] Fix critical bugs
-- [ ] Optimize video rendering speed
-- [ ] Optimize audio processing speed
-- [ ] Improve lyric accuracy
-- [ ] Optimize memory usage
-- [ ] Improve error messages
-
 ---
 
 ### Story 4.3: Fallback Logic & Error Handling
-**Type:** Feature  
-**Assignee:** All Members  
-**Story Points:** 8  
+**Type:** Issue  
+**Assignee:** Aruhant  
 **Priority:** P1  
-**Labels:** `error-handling`, `fallback`, `reliability`
+**Labels:** `integration`, `error-handling`, `fallback`
 
 **Description:**
 Implement comprehensive fallback logic for all failure scenarios.
@@ -534,20 +448,11 @@ Implement comprehensive fallback logic for all failure scenarios.
 - [ ] Graceful degradation when components fail
 - [ ] User-friendly error messages
 
-**Tasks:**
-- [ ] Create fallback logic if Demucs fails
-- [ ] Implement YouTube download fallback
-- [ ] Implement lyrics API fallback
-- [ ] Add graceful error handling
-- [ ] Test all failure scenarios
-- [ ] Document error handling behavior
-
 ---
 
 ### Story 4.4: Documentation & Code Quality
 **Type:** Task  
-**Assignee:** All Members  
-**Story Points:** 8  
+**Assignee:** Thomas  
 **Priority:** P0  
 **Labels:** `documentation`, `code-quality`, `final`
 
@@ -562,21 +467,11 @@ Complete all technical documentation, code comments, and ensure code quality sta
 - [ ] Architecture document finalized
 - [ ] Code review completed
 
-**Tasks:**
-- [ ] Finalize technical documentation and code comments
-- [ ] Create comprehensive README
-- [ ] Document API for each module
-- [ ] Add usage examples
-- [ ] Complete architecture document
-- [ ] Code review and cleanup
-- [ ] Finalize repository organization
-
 ---
 
 ### Story 4.5: Demo Preparation
 **Type:** Task  
-**Assignee:** All Members  
-**Story Points:** 8  
+**Assignee:** William  
 **Priority:** P0  
 **Labels:** `demo`, `presentation`, `final`
 
@@ -591,22 +486,11 @@ Prepare demonstration materials and examples showcasing the complete system.
 - [ ] Demo environment tested and ready
 - [ ] Troubleshooting guide for demo
 
-**Tasks:**
-- [ ] Prepare audio processing demonstration examples
-- [ ] Generate sample karaoke videos
-- [ ] Create before/after audio samples showcasing vocal separation
-- [ ] Prepare demo script
-- [ ] Create presentation slides
-- [ ] Test demo environment
-- [ ] Prepare troubleshooting guide
-- [ ] Practice demo run-through
-
 ---
 
 ### Story 4.6: Final QA & Testing
 **Type:** Task  
-**Assignee:** All Members  
-**Story Points:** 13  
+**Assignee:** Thomas  
 **Priority:** P0  
 **Labels:** `qa`, `testing`, `final`
 
@@ -621,29 +505,14 @@ Conduct comprehensive quality assurance testing across all functionality.
 - [ ] All tests passing
 - [ ] Test report generated
 
-**Tasks:**
-- [ ] Participate in full system testing and QA
-- [ ] Test with diverse song genres
-- [ ] Test edge cases (very short songs, very long songs, instrumental-only)
-- [ ] Performance testing
-- [ ] User acceptance testing
-- [ ] Generate test report
-- [ ] Fix any remaining issues
-
 ---
 
 ## Backlog Summary
 
-### Total Story Points by Sprint
-- **Sprint 1:** 40 points
-- **Sprint 2:** 55 points
-- **Sprint 3:** 47 points
-- **Sprint 4:** 71 points
-- **Total:** 213 points
-
 ### Stories by Priority
-- **P0 (Critical):** 15 stories
+- **P0 (Critical):** 22 stories
 - **P1 (High):** 1 story
+- **Total:** 23 stories
 
 ---
 
@@ -654,6 +523,8 @@ Conduct comprehensive quality assurance testing across all functionality.
 - `audio-processing`
 - `lyrics-intelligence`
 - `video-rendering`
+- `frontend`
+- `backend`
 - `integration`
 - `setup`
 - `research`
@@ -664,12 +535,17 @@ Conduct comprehensive quality assurance testing across all functionality.
 - `optimization`
 - `bug-fix`
 - `qa`
+- `testing`
 - `documentation`
+- `code-quality`
 - `demo`
-- `critical`
+- `presentation`
+- `api`
+- `ui`
+- `error-handling`
 - `lrc`
-- `frontend`
-- `backend`
+- `architecture`
+- `final`
 
 ### Milestones to Create
 - **Sprint 1:** Foundation & Research (Nov 4 - Nov 11)
@@ -688,13 +564,24 @@ Conduct comprehensive quality assurance testing across all functionality.
 
 ## Notes for GitLab Import
 
-1. Create all labels using `namespace::value` format (e.g., `type::story`, `priority::high`, `sprint::1`)
+### Important GitLab Limitations & Workarounds
+
+1. **Multiple Assignees:** GitLab doesn't support multiple assignees in free tier
+   - **Solution:** Assign one person as main assignee, mention others in description: `@username1 @username2`
+   - Or use labels like `team::all` to indicate team stories
+
+2. **Acceptance Criteria:** Not a separate field - add in issue description
+   - **Format:** Use markdown checklists: `- [ ] Criterion 1`
+   - **Location:** Add in the issue description under "## Acceptance Criteria"
+
+### Setup Steps
+
+1. Create all labels (simple format: `audio-acquisition`, `frontend`, `backend`, `setup`, etc.)
 2. Create all milestones (Sprint 1-4) with correct dates
-3. Create issues for each story (1.1 through 4.6)
-4. Assign issues to appropriate team members
+3. Create issues for each story (1.0 through 4.6)
+4. **For "All Members" stories:** Assign one person, mention others in description
 5. Assign issues to correct milestones
-6. Set story points using GitLab's weight system
-7. Add acceptance criteria as task checklists in issue descriptions
+6. Add acceptance criteria as markdown checklists in issue descriptions
 8. Set up Issue Boards:
    - Product Backlog board (label: `backlog`)
    - One board per sprint using Milestones
