@@ -16,6 +16,7 @@ This guide covers setting up the development environment for the Karaoke Video G
 - **Python:** 3.10 or higher
 - **Node.js:** 20.19+ or 22.12+ (for Vite)
 - **FFmpeg:** Latest stable version
+- **yt-dlp:** Latest version
 - **Git:** For version control
 
 ---
@@ -85,6 +86,17 @@ cd backend
 python -m core.video_rendering.test_basic_video
 ```
 
+### 5. Install yt-dlp
+```bash
+# From project root
+python scripts/setup_yt_dlp.py
+```
+
+'''This script will:
+- Check if ffmpeg is installed
+- Check if yt-dlp is installed
+- If not, install the latest version of yt-dlp'''
+
 ---
 
 ## Frontend Setup
@@ -120,6 +132,7 @@ Frontend will be available at `http://localhost:5173/`
 - **Python:** 3.10+
 - **Node.js:** 20.19+ or 22.12+
 - **FFmpeg:** 6.0+ (latest stable recommended)
+- **yt-dlp:** 2025.11.12+
 - **FastAPI:** 0.104+
 - **React:** 18+
 - **Vite:** 7.0+
