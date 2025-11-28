@@ -22,7 +22,7 @@ Represents an audio file downloaded or processed by the system.
 - `source_url` (String): Original YouTube URL
 - `file_path` (String): Local file system path
 - `format` (String): Audio format (MP3, WAV, etc.)
-- `duration` (Float): Duration in seconds
+- `duration` (Integer): Duration in seconds
 - `sample_rate` (Integer): Audio sample rate
 - `bitrate` (Integer): Audio bitrate
 - `file_size` (Integer): File size in bytes
