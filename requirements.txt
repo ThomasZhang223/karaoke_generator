@@ -1,0 +1,5 @@
+# Root requirements.txt
+# This project uses a monorepo structure.
+# See backend/requirements.txt for Python dependencies.
+# Frontend dependencies will be in frontend/package.json (once initialized).
+
