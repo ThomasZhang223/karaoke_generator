@@ -68,17 +68,18 @@ def download_audio(url, output_dir, audio_format, bitrate):
         metadata = json.loads(result.stdout)
         
         # Duration string is given in Minutes:Seconds
-        time = metadata['duration_string'].split(':') 
-        duration = int(time[0])*60 + int(time[1])
+        duration_str = metadata.get('duration_string', '0:0')
+        time = duration_str.split(':') 
+        duration = int(time[0])*60 + int(time[1]) if len(time) >= 2 else 0
         
-        filesize = metadata['filesize_approx']
+        filesize = metadata.get('filesize_approx', 0)
         metadata_success = True
         #print(metadata)
         
     except subprocess.TimeoutExpired:
         print("Timeout fetching video metadata")
-    except RuntimeError as e:
-        print(f'Error occured while fetching video metadata: {e}')
+    except KeyError as e:
+        print(f'No data exists for field: {e}')
         
     output_template = str(output_dir / f"{video_id}.%(ext)s")
     download_cmd = ['yt-dlp', url, '-x', '--audio-format', audio_format, '--audio-quality', f'{bitrate}K', '--no-playlist', '-o', output_template]

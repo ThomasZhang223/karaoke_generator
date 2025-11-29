@@ -133,6 +133,7 @@ Frontend will be available at `http://localhost:5173/`
 - **Node.js:** 20.19+ or 22.12+
 - **FFmpeg:** 6.0+ (latest stable recommended)
 - **yt-dlp:** 2025.11.12+
+- **pytest:** 9.0.1+
 - **FastAPI:** 0.104+
 - **React:** 18+
 - **Vite:** 7.0+
