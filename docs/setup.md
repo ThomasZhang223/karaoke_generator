@@ -99,6 +99,42 @@ python scripts/setup_yt_dlp.py
 
 ---
 
+### 6. Install Demucs (Audio Separation)
+
+Demucs is used for separating vocals from instrumental tracks for karaoke generation.
+
+**Installation:**
+```bash
+# Ensure virtual environment is activated
+# Install compatible versions
+pip install torchaudio==2.1.0
+pip install "numpy<2"
+pip install soundfile
+pip install demucs
+```
+
+**Verify Installation:**
+```bash
+demucs --help
+```
+
+**Test Audio Separation:**
+```bash
+# Test with a sample MP3 file
+demucs --two-stems=vocals path/to/test-song.mp3
+
+# Output will be in: separated/htdemucs/test-song/
+# - vocals.wav (singing only)
+# - no_vocals.wav (instrumental/karaoke track)
+```
+
+**Troubleshooting:**
+- If you get NumPy errors, ensure you have `numpy<2` installed
+- If you get torchaudio errors, use version 2.1.0 specifically
+- Requires FFmpeg to be installed (see step 3 above)
+
+---
+
 ## Frontend Setup
 
 ### 1. Install Node.js Dependencies
@@ -137,6 +173,9 @@ Frontend will be available at `http://localhost:5173/`
 - **FastAPI:** 0.104+
 - **React:** 18+
 - **Vite:** 7.0+
+- **Demucs:** 4.0.1+
+- **PyTorch/Torchaudio:** 2.1.0
+- **NumPy:** <2.0 (1.x versions)
 
 ### FFmpeg Codecs Required
 

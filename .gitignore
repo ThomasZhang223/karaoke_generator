@@ -112,3 +112,6 @@ tmp/
 
 # TypeScript
 *.tsbuildinfo
+
+# Demucs separated audio output
+separated/
