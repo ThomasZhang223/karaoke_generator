@@ -3,7 +3,7 @@ Backend configuration settings.
 Environment variables and application configuration.
 """
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -22,9 +22,10 @@ class Settings(BaseSettings):
     upload_dir: str = "uploads"
     output_dir: str = "output"
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+    )
 
 
 settings = Settings()
