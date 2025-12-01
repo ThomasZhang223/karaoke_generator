@@ -1,3 +1,10 @@
+# FastAPI and web server
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Audio and video processing
 ffmpeg-python==0.2.0
 future==1.0.0
 yt-dlp==2025.11.12

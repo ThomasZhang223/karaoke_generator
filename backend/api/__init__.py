@@ -1,5 +1,3 @@
 """
-API module for FastAPI application.
-Contains route handlers and endpoint definitions.
+API package for FastAPI endpoints.
 """
-

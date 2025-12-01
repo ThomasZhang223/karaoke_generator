@@ -1,5 +1,7 @@
 """
-Services module.
-Contains business logic and service layer implementations.
+Service layer for orchestrating core modules.
 """
 
+from .karaoke_service import KaraokeService
+
+__all__ = ["KaraokeService"]

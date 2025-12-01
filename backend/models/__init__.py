@@ -1,5 +1,17 @@
 """
-Data models module.
-Contains Pydantic models and data structures for API requests/responses.
+Data models for API requests and responses.
 """
 
+from .schemas import (
+    GenerateKaraokeRequest,
+    GenerateKaraokeResponse,
+    HealthResponse,
+    JobStatus,
+)
+
+__all__ = [
+    "GenerateKaraokeRequest",
+    "GenerateKaraokeResponse",
+    "HealthResponse",
+    "JobStatus",
+]
