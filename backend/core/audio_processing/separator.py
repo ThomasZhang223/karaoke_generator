@@ -63,7 +63,19 @@ def separate_vocals(
         error_msg = last_error.stderr if hasattr(last_error, 'stderr') and last_error.stderr else str(last_error)
         error_details = f"Demucs failed: {error_msg}"
         
+        if use_fallback:
+            try:
+                return _separate_with_spleeter(audio_path, output_dir)
+            except Exception as fallback_error:
+                raise RuntimeError(
+                    f"Both Demucs and Spleeter failed. "
+                    f"Demucs error: {error_details}, Spleeter error: {str(fallback_error)}"
+                )
+        else:
+            raise RuntimeError(f"Demucs vocal separation failed: {error_details}")
     
+
+
     # Get output paths (only reached if Demucs succeeded)
     filename = Path(audio_path).stem
     base_path = output_path / "htdemucs" / filename
@@ -75,8 +87,59 @@ def separate_vocals(
     if not vocals_path.exists() or not instrumental_path.exists():
         error_msg = f"Demucs output files not found. Expected: {vocals_path} and {instrumental_path}"
         
+        if use_fallback:
+            try:
+                return _separate_with_spleeter(audio_path, output_dir)
+            except Exception as fallback_error:
+                raise RuntimeError(
+                    f"Both Demucs and Spleeter failed. "
+                    f"Demucs error: {error_msg}, Spleeter error: {str(fallback_error)}"
+                )
+        else:
+            raise FileNotFoundError(error_msg)
+        
     return {
         "vocals": str(vocals_path.absolute()),
         "instrumental": str(instrumental_path.absolute()),
         "method": "demucs"
     }
+
+def _separate_with_spleeter(audio_path: str, output_dir: str) -> Dict[str, str]:
+    """
+    Story 2.3: Spleeter Fallback Implementation
+    
+    Separate vocals using Spleeter as fallback when Demucs fails.
+    """
+    try:
+        from spleeter.separator import Separator
+        
+        separator = Separator('spleeter:2stems-16kHz')
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        
+        # Spleeter expects directory, not file
+        separator.separate_to_file(
+            audio_path,
+            str(output_path)
+        )
+        
+        # Spleeter output structure: output_dir/track_name/vocals.wav and accompaniment.wav
+        filename = Path(audio_path).stem
+        base_path = output_path / filename
+        
+        vocals_path = base_path / "vocals.wav"
+        instrumental_path = base_path / "accompaniment.wav"
+        
+        if not vocals_path.exists() or not instrumental_path.exists():
+            raise FileNotFoundError("Spleeter output files not found")
+        
+        return {
+            "vocals": str(vocals_path.absolute()),
+            "instrumental": str(instrumental_path.absolute()),
+            "method": "spleeter"
+        }
+        
+    except ImportError:
+        raise RuntimeError("Spleeter not installed. Install with: pip install spleeter")
+    except Exception as e:
+        raise RuntimeError(f"Spleeter separation failed: {str(e)}")
