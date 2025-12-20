@@ -74,7 +74,33 @@ async def get_job_status(job_id: str):
 
 @router.get("/download/{job_id}")
 async def download_video(job_id: str):
-    """Download the generated karaoke video."""
+    """
+    Download the generated karaoke video.
+    
+    Story 4.1: Video download functionality working
+    """
+    job = karaoke_service.get_job_status(job_id)
+    
+    if job is None:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    
+    if job["status"] != JobStatus.COMPLETED:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Video is not ready. Current status: {job['status']}"
+        )
+    
+    video_path = job.get("video_path")
+    if not video_path:
+        raise HTTPException(status_code=404, detail="Video file not found")
+    
+    # Story 4.1: Return file response with proper MIME type
+    return FileResponse(
+        path=video_path,
+        media_type="video/mp4",
+        filename=f"karaoke_{job_id}.mp4"
+    )
+
 
 # ============================================================================
 # STORY 3.6: Frontend-Backend Integration
