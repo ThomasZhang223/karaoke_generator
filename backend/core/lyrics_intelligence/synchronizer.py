@@ -257,3 +257,157 @@ def generate_lrc_file(
     
     return str(output_file.absolute())
 
+# ==============================================================================
+# END OF SPRINT 2 - ARUHANT
+# ==============================================================================
+
+
+# ==============================================================================
+# SPRINT 3 - ARUHANT
+# Story 3.2: Lyrics Timestamp Synchronization
+# - Timestamp synchronization algorithm implemented
+# - Integration with LRCLib synced lyrics
+# - Manual correction tools for inaccurate timestamps
+# - Integration test with audio files
+# ==============================================================================
+
+def synchronize_lyrics_with_audio(
+    lyrics_text: str,
+    audio_duration: float,
+    audio_path: Optional[str] = None
+) -> LRCData:
+    """
+    Synchronize lyrics with audio timestamps.
+    
+    Story 3.2: Lyrics timestamp synchronization algorithm
+    
+    This is a simple time-based distribution algorithm.
+    For production, you'd use audio analysis or QuickLRC AI.
+    
+    Args:
+        lyrics_text: Plain text lyrics (one line per lyric line)
+        audio_duration: Duration of audio in seconds
+        audio_path: Optional path to audio file (for future audio analysis)
+        
+    Returns:
+        LRCData with synchronized timestamps
+    """
+    lines = [line.strip() for line in lyrics_text.split('\n') if line.strip()]
+    
+    if not lines:
+        raise ValueError("No lyrics provided")
+    
+    # Simple algorithm: distribute lyrics evenly across audio duration
+    # Start lyrics immediately (no intro delay) for better timing
+    intro_duration = 0.0  # No intro delay - start immediately
+    outro_duration = audio_duration * 0.05  # Last 5% is outro
+    lyrics_duration = audio_duration - intro_duration - outro_duration
+    
+    time_per_line = lyrics_duration / len(lines) if lines else 0
+    
+    lyric_lines = []
+    for i, text in enumerate(lines):
+        start_time = intro_duration + (i * time_per_line)
+        end_time = start_time + time_per_line
+        
+        lyric_lines.append(LyricLine(
+            start_time=start_time,
+            end_time=end_time,
+            text=text,
+            line_number=i + 1
+        ))
+    
+    return LRCData(lyrics=lyric_lines)
+
+
+def synchronize_from_lrclib_result(
+    lrclib_result,
+    audio_duration: float
+) -> LRCData:
+    """
+    Convert LRCLib API result to LRCData format.
+    
+    Story 3.2: Integration with LRCLib synced lyrics
+    
+    Args:
+        lrclib_result: Result from LRCLib API search_lyrics
+        audio_duration: Duration of audio in seconds
+        
+    Returns:
+        LRCData with synchronized lyrics
+    """
+    data = LRCData(
+        title=lrclib_result.track_name or "",
+        artist=lrclib_result.artist_name or ""
+    )
+    
+    # Try synced lyrics first, fallback to plain if it fails or returns 0 lines
+    use_plain = False
+    synced_available = hasattr(lrclib_result, 'synced_lyrics') and lrclib_result.synced_lyrics
+    plain_available = hasattr(lrclib_result, 'plain_lyrics') and lrclib_result.plain_lyrics
+    
+    print(f"[Lyrics] synced_lyrics available: {synced_available}, plain_lyrics available: {plain_available}")
+    
+    if synced_available:
+        import tempfile
+        import os
+        
+        print(f"[Lyrics] Attempting to parse synced_lyrics ({len(lrclib_result.synced_lyrics)} chars)...")
+        
+        # Debug: Show first few lines of synced_lyrics
+        first_lines = lrclib_result.synced_lyrics.split('\n')[:5]
+        print(f"[Lyrics] First 5 lines of synced_lyrics:")
+        for i, line in enumerate(first_lines):
+            print(f"[Lyrics]   {i+1}: '{line[:60]}'")
+        
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.lrc', delete=False, encoding='utf-8') as f:
+            f.write(lrclib_result.synced_lyrics)
+            temp_lrc_path = f.name
+        
+        print(f"[Lyrics] Wrote temp file: {temp_lrc_path}")
+        
+        try:
+            parsed_data = parse_lrc_file(temp_lrc_path)
+            print(f"[Lyrics] parse_lrc_file returned {len(parsed_data.lyrics)} lyrics")
+            if len(parsed_data.lyrics) > 0:
+                data = parsed_data
+                data.title = lrclib_result.track_name or data.title
+                data.artist = lrclib_result.artist_name or data.artist
+                print(f"[Lyrics] ✓ Successfully parsed {len(data.lyrics)} lines from synced_lyrics")
+                print(f"[Lyrics] First lyric: '{data.lyrics[0].text}' at {data.lyrics[0].start_time:.2f}s")
+            else:
+                print(f"[Lyrics] ⚠ Parsed 0 lines from synced_lyrics, falling back to plain_lyrics")
+                use_plain = True
+        except Exception as e:
+            print(f"[Lyrics] ⚠ Exception parsing synced_lyrics: {e}")
+            import traceback
+            traceback.print_exc()
+            use_plain = True
+        finally:
+            if os.path.exists(temp_lrc_path):
+                os.unlink(temp_lrc_path)
+    else:
+        print(f"[Lyrics] No synced_lyrics available, using plain_lyrics")
+        use_plain = True
+    
+    # Fallback to plain lyrics if synced parsing failed or returned 0 lines
+    if use_plain:
+        if plain_available:
+            print(f"[Lyrics] Synchronizing plain_lyrics with audio duration ({audio_duration}s)...")
+            data = synchronize_lyrics_with_audio(
+                lrclib_result.plain_lyrics,
+                audio_duration
+            )
+            data.title = lrclib_result.track_name or ""
+            data.artist = lrclib_result.artist_name or ""
+            print(f"[Lyrics] ✓ Synchronized {len(data.lyrics)} lines from plain_lyrics")
+        else:
+            print(f"[Lyrics] ⚠ WARNING: No plain_lyrics available either! Returning empty LRCData")
+    
+    print(f"[Lyrics] Final result: {len(data.lyrics)} lyric lines, title='{data.title}', artist='{data.artist}'")
+    return data
+
+# ==============================================================================
+# END OF SPRINT 3 - ARUHANT
+# ==============================================================================
+
