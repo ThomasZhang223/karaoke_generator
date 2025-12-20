@@ -1,30 +1,9 @@
-# ==============================================================================
-# ==============================================================================
-#                        LYRICS SYNCHRONIZER MODULE
-# ==============================================================================
-# ==============================================================================
-#
-# Sprint 2 - Story 2.5: LRC File Generation Foundation (Aruhant)
-# Sprint 3 - Story 3.2: Lyrics Timestamp Synchronization (Aruhant)
-# Sprint 4 - Story 4.3: Fallback Logic & Error Handling (Aruhant)
-#
-# ==============================================================================
-
-"""
-LRC file generation and lyrics timestamp synchronization
-Story 2.5: LRC File Generation Foundation
-Story 3.2: Lyrics Timestamp Synchronization
-"""
-
 import re
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 
 
-# ==============================================================================
-# Data Models
-# ==============================================================================
 
 @dataclass
 class LyricLine:
@@ -48,15 +27,6 @@ class LRCData:
         if self.lyrics is None:
             self.lyrics = []
 
-
-# ==============================================================================
-# SPRINT 2 - ARUHANT
-# Story 2.5: LRC File Generation Foundation
-# - LRC file parser implemented
-# - LRC file generator implemented
-# - Basic timestamp format validation
-# - Documentation of LRC format requirements
-# ==============================================================================
 
 def parse_lrc_file(lrc_path: str) -> LRCData:
     """
