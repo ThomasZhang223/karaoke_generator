@@ -162,7 +162,8 @@ Demucs is used for separating vocals from instrumental tracks for karaoke genera
 ```bash
 # Ensure virtual environment is activated
 # Install compatible versions
-pip install torchaudio==2.1.0
+# Note: For Python 3.12+, use torchaudio 2.2.0+ (2.1.0 not available)
+pip install torch torchaudio  # Will install latest compatible versions
 pip install "numpy<2"
 pip install soundfile
 pip install demucs
@@ -185,7 +186,9 @@ demucs --two-stems=vocals path/to/test-song.mp3
 
 **Troubleshooting:**
 - If you get NumPy errors, ensure you have `numpy<2` installed
-- If you get torchaudio errors, use version 2.1.0 specifically
+- If you get torchaudio errors:
+  - For Python 3.10-3.11: `pip install torchaudio==2.1.0`
+  - For Python 3.12+: `pip install torchaudio>=2.2.0` (2.1.0 not available)
 - Requires FFmpeg to be installed (see step 3 above)
 
 ---

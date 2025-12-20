@@ -72,6 +72,57 @@ async def get_job_status(job_id: str):
 @router.get("/download/{job_id}")
 async def download_video(job_id: str):
     """Download the generated karaoke video."""
+
+# ============================================================================
+# STORY 3.6: Frontend-Backend Integration
+# ============================================================================
+
+@router.post("/generate-karaoke", response_model=dict, status_code=202)
+async def generate_karaoke_for_frontend(
+    request: dict,  # Frontend sends { youtubeUrl, style?, quality? }
+    background_tasks: BackgroundTasks
+):
+    """
+    Generate karaoke video - endpoint matching frontend expectations.
+    Story 3.6: Frontend successfully calls backend API endpoints
+    
+    Frontend sends: { youtubeUrl, style?, quality? }
+    Returns: { jobId }
+    """
+    try:
+        youtube_url = request.get("youtubeUrl")
+        if not youtube_url:
+            raise HTTPException(status_code=400, detail="youtubeUrl is required")
+        
+        # Map frontend quality to backend settings
+        quality = request.get("quality", "standard")
+        audio_bitrate = 256 if quality == "high" else 192
+        
+        job_id = karaoke_service.create_job(
+            youtube_url=youtube_url,
+            audio_format="mp3",
+            audio_bitrate=audio_bitrate
+        )
+        
+        background_tasks.add_task(karaoke_service.process_job, job_id)
+        
+        return {"jobId": job_id}
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create job: {str(e)}")
+
+
+@router.get("/jobs/{job_id}", response_model=dict)
+async def get_job_status_for_frontend(job_id: str):
+    """
+    Get job status in format expected by frontend.
+    Story 3.6: Progress updates displayed in real-time
+    
+    Frontend expects: { jobId, status, progress, stage, videoUrl, errorMessage }
+    """
+    print(f"[API] GET /jobs/{job_id}: Request received")
     job = karaoke_service.get_job_status(job_id)
     
     if job is None:

@@ -1,3 +1,14 @@
+# ==============================================================================
+# ==============================================================================
+#                        DOWNLOADER UNIT TESTS
+# ==============================================================================
+# ==============================================================================
+#
+# Sprint 4 - Story 4.4: Documentation & Code Quality (Thomas)
+# Sprint 4 - Story 4.6: Final QA & Testing (Thomas)
+#
+# ==============================================================================
+
 """
 Unit Tests for YouTube Audio Downloader
 
@@ -12,6 +23,16 @@ import tempfile
 import shutil
 
 from downloader import download_audio, validate_url, AudioFile, Status
+
+
+# ==============================================================================
+# SPRINT 4 - THOMAS
+# Story 4.4: Documentation & Code Quality
+# Story 4.6: Final QA & Testing
+# - Unit tests for audio acquisition module
+# - Test cases cover all major features
+# - Edge cases tested
+# ==============================================================================
 
 
 class TestValidateUrl:
@@ -93,3 +114,7 @@ class TestDownloadAudio:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+# ==============================================================================
+# END OF SPRINT 4 - THOMAS
+# ==============================================================================

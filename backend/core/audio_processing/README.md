@@ -1,3 +1,10 @@
+<!-- ==============================================================================
+SPRINT 4 - THOMAS
+Story 4.4: Documentation & Code Quality
+- API documentation complete for audio processing module
+- Usage examples documented
+============================================================================== -->
+
 # Audio Processing Module
 
 Handles vocal separation using Demucs for karaoke generation.

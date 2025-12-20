@@ -1,4 +1,25 @@
+# ==============================================================================
+# ==============================================================================
+#                        LYRICS SCRAPER MODULE
+# ==============================================================================
+# ==============================================================================
+#
+# Sprint 1 - Story 1.4: Lyrics Intelligence Research & Setup (Aruhant)
+# Sprint 2 - Story 2.4: Lyrics Fetching Implementation (Aruhant)
+#
+# ==============================================================================
+
 from lrclib import LrcLibAPI
+
+
+# ==============================================================================
+# SPRINT 2 - ARUHANT
+# Story 2.4: Lyrics Fetching Implementation
+# - Lyrics fetching from primary API (LRCLib)
+# - Song title and artist matching logic
+# - Error handling for missing lyrics, API failures
+# - Rate limiting and API usage tracking
+# ==============================================================================
 
 # lyrics search fuzzy with respect to duration
 def fetch_lyrics(search_str: str, duration: int):
@@ -21,3 +42,7 @@ def fetch_lyrics(search_str: str, duration: int):
             best_match = result
 
     return best_match
+
+# ==============================================================================
+# END OF SPRINT 2 - ARUHANT
+# ==============================================================================
