@@ -1,9 +1,12 @@
 """
 Karaoke generation endpoints.
+Story 3.6: Frontend-Backend Integration
+Story 4.1: End-to-End Integration
 """
 
 from typing import Optional
 from fastapi import APIRouter, HTTPException, BackgroundTasks
+from fastapi.responses import FileResponse
 from backend.models.schemas import (
     GenerateKaraokeRequest,
     GenerateKaraokeResponse,
@@ -69,30 +72,99 @@ async def get_job_status(job_id: str):
     )
 
 
-@router.get("/download/{job_id}")
-async def download_video(job_id: str):
-    """Download the generated karaoke video."""
+
+
+
+# ============================================================================
+# STORY 3.6: Frontend-Backend Integration
+# ============================================================================
+
+@router.post("/generate-karaoke", response_model=dict, status_code=202)
+async def generate_karaoke_for_frontend(
+    request: dict,  # Frontend sends { youtubeUrl, style?, quality? }
+    background_tasks: BackgroundTasks
+):
+    """
+    Generate karaoke video - endpoint matching frontend expectations.
+    Story 3.6: Frontend successfully calls backend API endpoints
+    
+    Frontend sends: { youtubeUrl, style?, quality? }
+    Returns: { jobId }
+    """
+    try:
+        youtube_url = request.get("youtubeUrl")
+        if not youtube_url:
+            raise HTTPException(status_code=400, detail="youtubeUrl is required")
+        
+        # Map frontend quality to backend settings
+        quality = request.get("quality", "standard")
+        audio_bitrate = 256 if quality == "high" else 192
+        
+        job_id = karaoke_service.create_job(
+            youtube_url=youtube_url,
+            audio_format="mp3",
+            audio_bitrate=audio_bitrate
+        )
+        
+        background_tasks.add_task(karaoke_service.process_job, job_id)
+        
+        return {"jobId": job_id}
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create job: {str(e)}")
+
+
+@router.get("/jobs/{job_id}", response_model=dict)
+async def get_job_status_for_frontend(job_id: str):
+    """
+    Get job status in format expected by frontend.
+    Story 3.6: Progress updates displayed in real-time
+    
+    Frontend expects: { jobId, status, progress, stage, videoUrl, errorMessage }
+    """
+    print(f"[API] GET /jobs/{job_id}: Request received")
     job = karaoke_service.get_job_status(job_id)
+    print(f"[API] GET /jobs/{job_id}: Job found: {job is not None}")
     
     if job is None:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
-    if job["status"] != JobStatus.COMPLETED:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Video is not ready. Current status: {job['status']}"
-        )
+    # Map backend status to frontend status
+    status_map = {
+        JobStatus.PENDING: "queued",
+        JobStatus.DOWNLOADING: "processing",
+        JobStatus.PROCESSING_AUDIO: "processing",
+        JobStatus.FETCHING_LYRICS: "processing",
+        JobStatus.SYNCHRONIZING: "processing",
+        JobStatus.RENDERING_VIDEO: "rendering",
+        JobStatus.COMPLETED: "completed",
+        JobStatus.FAILED: "failed",
+    }
     
-    video_path = job.get("video_path")
-    if not video_path:
-        raise HTTPException(status_code=404, detail="Video file not found")
+    frontend_status = status_map.get(job["status"], "processing")
     
-    # TODO: Return file response when video rendering is implemented
-    # from fastapi.responses import FileResponse
-    # return FileResponse(path=video_path, media_type="video/mp4", filename=f"karaoke_{job_id}.mp4")
+    video_url = None
+    if job["status"] == JobStatus.COMPLETED and job.get("video_path"):
+        video_url = f"/api/v1/karaoke/download/{job_id}"
     
-    return {"message": "Video download endpoint - to be implemented when video rendering is complete"}
+    # Debug: Print what we're returning
+    print(f"[API] GET /jobs/{job_id}: status={frontend_status}, progress={job.get('progress', 0)}, stage={job.get('stage')}")
+    
+    return {
+        "jobId": job["job_id"],
+        "status": frontend_status,
+        "progress": job.get("progress", 0),
+        "stage": job.get("stage"),
+        "videoUrl": video_url,
+        "errorMessage": job.get("error")
+    }
 
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
 
 def _get_status_message(status: JobStatus, error: Optional[str] = None) -> str:
     """Get human-readable status message."""
