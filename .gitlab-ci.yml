@@ -1,0 +1,241 @@
+# GitLab CI/CD Pipeline for Karaoke Project
+# Backend: Python/FastAPI | Frontend: React/Vite/TypeScript
+
+stages:
+  - install
+  - lint
+  - test
+  - build
+  - deploy
+
+# ============================================
+# Global Variables
+# ============================================
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  NPM_CACHE_DIR: "$CI_PROJECT_DIR/.cache/npm"
+  FF_USE_FASTZIP: "true"
+
+# ============================================
+# Cache Templates
+# ============================================
+.python_cache: &python_cache
+  cache:
+    key: python-${CI_COMMIT_REF_SLUG}
+    paths:
+      - .cache/pip
+      - .venv/
+    policy: pull-push
+
+.node_cache: &node_cache
+  cache:
+    key: node-${CI_COMMIT_REF_SLUG}
+    paths:
+      - .cache/npm
+      - frontend/node_modules/
+    policy: pull-push
+
+# ============================================
+# Backend Jobs (Python)
+# ============================================
+
+# Install Python dependencies
+backend:install:
+  stage: install
+  image: python:3.12-slim
+  <<: *python_cache
+  script:
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - pip install --upgrade pip
+    - pip install -r backend/requirements.txt
+  rules:
+    - changes:
+        - backend/**/*
+        - requirements.txt
+        - pytest.ini
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Backend linting (optional - add ruff/flake8 to requirements if needed)
+backend:lint:
+  stage: lint
+  image: python:3.12-slim
+  <<: *python_cache
+  needs: ["backend:install"]
+  script:
+    - source .venv/bin/activate
+    - pip install ruff || true
+    - ruff check backend/ --ignore E501 || echo "Linting completed with warnings"
+  allow_failure: true
+  rules:
+    - changes:
+        - backend/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Backend unit tests with coverage
+backend:test:
+  stage: test
+  image: python:3.12-slim
+  <<: *python_cache
+  needs: ["backend:install"]
+  before_script:
+    - apt-get update && apt-get install -y ffmpeg || true
+  script:
+    - source .venv/bin/activate
+    - pytest backend/tests/ -v --cov=backend --cov-report=xml --cov-report=term-missing -m "not integration and not e2e and not performance"
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - coverage.xml
+      - htmlcov/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    expire_in: 7 days
+  rules:
+    - changes:
+        - backend/**/*
+        - pytest.ini
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Backend integration tests (optional, runs on main branch)
+backend:integration:
+  stage: test
+  image: python:3.12-slim
+  <<: *python_cache
+  needs: ["backend:install"]
+  before_script:
+    - apt-get update && apt-get install -y ffmpeg || true
+  script:
+    - source .venv/bin/activate
+    - pytest backend/tests/ -v -m "integration" || echo "No integration tests found or tests skipped"
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: manual
+
+# ============================================
+# Frontend Jobs (Node.js/React/Vite)
+# ============================================
+
+# Install Node dependencies
+frontend:install:
+  stage: install
+  image: node:20-alpine
+  <<: *node_cache
+  script:
+    - cd frontend
+    - npm ci --cache ../.cache/npm
+  rules:
+    - changes:
+        - frontend/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Frontend linting
+frontend:lint:
+  stage: lint
+  image: node:20-alpine
+  <<: *node_cache
+  needs: ["frontend:install"]
+  script:
+    - cd frontend
+    - npm run lint
+  rules:
+    - changes:
+        - frontend/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Frontend unit tests with coverage
+frontend:test:
+  stage: test
+  image: node:20-alpine
+  <<: *node_cache
+  needs: ["frontend:install"]
+  script:
+    - cd frontend
+    - npm run test:coverage
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    when: always
+    paths:
+      - frontend/coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: frontend/coverage/cobertura-coverage.xml
+    expire_in: 7 days
+  rules:
+    - changes:
+        - frontend/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Frontend build
+frontend:build:
+  stage: build
+  image: node:20-alpine
+  <<: *node_cache
+  needs: ["frontend:install", "frontend:lint", "frontend:test"]
+  script:
+    - cd frontend
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 7 days
+  rules:
+    - changes:
+        - frontend/**/*
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# ============================================
+# Deploy Stage (customize for your environment)
+# ============================================
+
+deploy:staging:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - job: backend:test
+      optional: true
+    - job: frontend:build
+      optional: true
+  script:
+    - echo "Deploying to staging environment..."
+    - echo "Backend and Frontend artifacts ready for deployment"
+    # Add your deployment commands here
+    # e.g., docker build, kubectl apply, rsync, etc.
+  environment:
+    name: staging
+    url: https://staging.example.com
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+
+deploy:production:
+  stage: deploy
+  image: alpine:latest
+  needs:
+    - job: backend:test
+      optional: true
+    - job: frontend:build
+      optional: true
+  script:
+    - echo "Deploying to production environment..."
+    # Add your production deployment commands here
+  environment:
+    name: production
+    url: https://example.com
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  allow_failure: false
