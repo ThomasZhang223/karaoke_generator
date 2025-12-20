@@ -1,0 +1,10 @@
+# Valid YouTube URLs for testing
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+https://youtu.be/dQw4w9WgXcQ
+https://www.youtube.com/watch?v=jNQXAC9IVRw&t=30s
+https://www.youtube.com/watch?v=9bZkp7q19f0&list=PLrAXtmErZgOeiKm4sgNOknGvNjby9efdf
+
+# Invalid URLs for error testing
+https://example.com
+not-a-url
+ftp://youtube.com/watch?v=123
