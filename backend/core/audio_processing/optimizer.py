@@ -1,33 +1,3 @@
-# ==============================================================================
-# ==============================================================================
-#                        AUDIO OPTIMIZER MODULE
-# ==============================================================================
-# ==============================================================================
-#
-# Sprint 2 - Story 2.2: Demucs Vocal Separation Pipeline (Mark)
-#           Audio quality optimization functions (normalization, noise reduction)
-# Sprint 4 - Story 4.2: Bug Fixes & Performance Optimization (Mark)
-#
-# ==============================================================================
-
-"""
-Audio quality optimization
-Story 2.2: Audio quality optimization functions
-"""
-
-import subprocess
-from pathlib import Path
-from typing import Optional
-
-
-# ==============================================================================
-# SPRINT 2 - MARK
-# Story 2.2: Audio Quality Optimization Functions
-# - Normalize audio to target LUFS level using FFmpeg
-# - Reduce background noise from audio using FFmpeg
-# - Apply audio quality optimizations (normalize, denoise)
-# ==============================================================================
-
 def normalize_audio(
     input_path: str,
     output_path: str,
@@ -163,8 +133,3 @@ def optimize_audio_quality(
         current_path = reduce_noise(current_path, output_path)
     
     return current_path
-
-# ==============================================================================
-# END OF SPRINT 2 - MARK
-# ==============================================================================
-
