@@ -1,0 +1,27 @@
+# FastAPI and web server
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# Audio and video processing
+ffmpeg-python==0.2.0
+future==1.0.0
+yt-dlp==2025.11.12
+pytest==9.0.1
+
+# Lyrics intelligence
+lrclibapi==0.3.1
+
+# Audio separation (Demucs)
+# Note: Install these in order, as some have specific version requirements
+# For Python 3.12, use compatible torch versions
+torch>=2.0.0
+torchaudio==2.2.0  # Lowest version available for Python 3.12
+numpy<2.0.0  # Demucs requires numpy < 2.0
+soundfile>=0.12.0
+demucs>=4.0.0
+# Note: If you get torchcodec errors, we configure Demucs to use soundfile backend
+
+# Optional: Spleeter fallback (Story 2.3 - optional)
+# spleeter>=2.3.0  # Uncomment if you want Spleeter fallback support
